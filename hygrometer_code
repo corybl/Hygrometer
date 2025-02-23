@@ -1,0 +1,764 @@
+#include "dht.h" // Library used for the humidity sensor
+
+#define dht_apin A0 // Analog Pin sensor is connected to
+
+dht DHT;
+
+int num = 0;
+
+//ORDER OF SEVEN SEGMENT DISPLAYS (ssd): ssd1, ssd2
+
+void ssd1off(){        //Turn ssd1 off
+  digitalWrite(A2, LOW);
+  digitalWrite(2, LOW);
+  digitalWrite(3, LOW);
+  digitalWrite(4, LOW);
+  digitalWrite(5, LOW);
+  digitalWrite(6, LOW);
+  digitalWrite(7, LOW);
+}
+void ssd1no0(){         //Display number 0 on ssd1
+  digitalWrite(A2, HIGH);
+  digitalWrite(2, HIGH);
+  digitalWrite(3, HIGH);
+  digitalWrite(4, HIGH);
+  digitalWrite(5, HIGH);
+  digitalWrite(6, HIGH);
+  digitalWrite(7, LOW);
+}
+void ssd1no1(){        //Display number 1 on ssd1
+  digitalWrite(A2, LOW);
+  digitalWrite(2, HIGH);
+  digitalWrite(3, HIGH);
+  digitalWrite(4, LOW);
+  digitalWrite(5, LOW);
+  digitalWrite(6, LOW);
+  digitalWrite(7, LOW);
+}
+void ssd1no2(){        //Display number 2 on ssd1
+  digitalWrite(A2, HIGH);
+  digitalWrite(2, HIGH);
+  digitalWrite(3, LOW);
+  digitalWrite(4, HIGH);
+  digitalWrite(5, HIGH);
+  digitalWrite(6, LOW);
+  digitalWrite(7, HIGH);
+}
+void ssd1no3(){        //Display number 3 on ssd1
+  digitalWrite(A2, HIGH);
+  digitalWrite(2, HIGH);
+  digitalWrite(3, HIGH);
+  digitalWrite(4, HIGH);
+  digitalWrite(5, LOW);
+  digitalWrite(6, LOW);
+  digitalWrite(7, HIGH);
+}
+void ssd1no4(){        //Display number 4 on ssd1
+  digitalWrite(A2, LOW);
+  digitalWrite(2, HIGH);
+  digitalWrite(3, HIGH);
+  digitalWrite(4, LOW);
+  digitalWrite(5, LOW);
+  digitalWrite(6, HIGH);
+  digitalWrite(7, HIGH);
+}
+void ssd1no5(){        //Display number 5 on ssd1
+  digitalWrite(A2, HIGH);
+  digitalWrite(2, LOW);
+  digitalWrite(3, HIGH);
+  digitalWrite(4, HIGH);
+  digitalWrite(5, LOW);
+  digitalWrite(6, HIGH);
+  digitalWrite(7, HIGH);
+}
+void ssd1no6(){        //Display number 6 on ssd1
+  digitalWrite(A2, HIGH);
+  digitalWrite(2, LOW);
+  digitalWrite(3, HIGH);
+  digitalWrite(4, HIGH);
+  digitalWrite(5, HIGH);
+  digitalWrite(6, HIGH);
+  digitalWrite(7, HIGH);
+}
+void ssd1no7(){        //Display number 7 on ssd1
+  digitalWrite(A2, HIGH);
+  digitalWrite(2, HIGH);
+  digitalWrite(3, HIGH);
+  digitalWrite(4, LOW);
+  digitalWrite(5, LOW);
+  digitalWrite(6, LOW);
+  digitalWrite(7, LOW);
+}
+void ssd1no8(){        //Display number 8 on ssd1
+  digitalWrite(A2, HIGH);
+  digitalWrite(2, HIGH);
+  digitalWrite(3, HIGH);
+  digitalWrite(4, HIGH);
+  digitalWrite(5, HIGH);
+  digitalWrite(6, HIGH);
+  digitalWrite(7, HIGH);
+}
+void ssd1no9(){        //Display number 9 on ssd1
+  digitalWrite(A2, HIGH);
+  digitalWrite(2, HIGH);
+  digitalWrite(3, HIGH);
+  digitalWrite(4, HIGH);
+  digitalWrite(5, LOW);
+  digitalWrite(6, HIGH);
+  digitalWrite(7, HIGH);
+}
+
+//#################################################################\\
+
+void ssd2off(){        //Turn ssd2 off
+  digitalWrite(A1, LOW);
+  digitalWrite(8, LOW);
+  digitalWrite(9, LOW);
+  digitalWrite(10, LOW);
+  digitalWrite(11, LOW);
+  digitalWrite(12, LOW);
+  digitalWrite(13, LOW);
+}
+void ssd2no0(){        //Display number 0 on ssd2
+  digitalWrite(A1, HIGH);
+  digitalWrite(8, HIGH);
+  digitalWrite(9, HIGH);
+  digitalWrite(10, HIGH);
+  digitalWrite(11, HIGH);
+  digitalWrite(12, HIGH);
+  digitalWrite(13, LOW);
+}
+void ssd2no1(){        //Display number 1 on ssd2
+  digitalWrite(A1, LOW);
+  digitalWrite(8, HIGH);
+  digitalWrite(9, HIGH);
+  digitalWrite(10, LOW);
+  digitalWrite(11, LOW);
+  digitalWrite(12, LOW);
+  digitalWrite(13, LOW);
+}
+void ssd2no2(){        //Display number 2 on ssd2
+  digitalWrite(A1, HIGH);
+  digitalWrite(8, HIGH);
+  digitalWrite(9, LOW);
+  digitalWrite(10, HIGH);
+  digitalWrite(11, HIGH);
+  digitalWrite(12, LOW);
+  digitalWrite(13, HIGH);
+}
+void ssd2no3(){        //Display number 3 on ssd2
+  digitalWrite(A1, HIGH);
+  digitalWrite(8, HIGH);
+  digitalWrite(9, HIGH);
+  digitalWrite(10, HIGH);
+  digitalWrite(11, LOW);
+  digitalWrite(12, LOW);
+  digitalWrite(13, HIGH);
+}
+void ssd2no4(){        //Display number 4 on ssd2
+  digitalWrite(A1, LOW);
+  digitalWrite(8, HIGH);
+  digitalWrite(9, HIGH);
+  digitalWrite(10, LOW);
+  digitalWrite(11, LOW);
+  digitalWrite(12, HIGH);
+  digitalWrite(13, HIGH);
+}
+void ssd2no5(){        //Display number 5 on ssd2
+  digitalWrite(A1, HIGH);
+  digitalWrite(8, LOW);
+  digitalWrite(9, HIGH);
+  digitalWrite(10, HIGH);
+  digitalWrite(11, LOW);
+  digitalWrite(12, HIGH);
+  digitalWrite(13, HIGH);
+}
+void ssd2no6(){        //Display number 6 on ssd2
+  digitalWrite(A1, HIGH);
+  digitalWrite(8, LOW);
+  digitalWrite(9, HIGH);
+  digitalWrite(10, HIGH);
+  digitalWrite(11, HIGH);
+  digitalWrite(12, HIGH);
+  digitalWrite(13, HIGH);
+}
+void ssd2no7(){        //Display number 7 on ssd2
+  digitalWrite(A1, HIGH);
+  digitalWrite(8, HIGH);
+  digitalWrite(9, HIGH);
+  digitalWrite(10, LOW);
+  digitalWrite(11, LOW);
+  digitalWrite(12, LOW);
+  digitalWrite(13, LOW);
+}
+void ssd2no8(){        //Display number 8 on ssd2
+  digitalWrite(A1, HIGH);
+  digitalWrite(8, HIGH);
+  digitalWrite(9, HIGH);
+  digitalWrite(10, HIGH);
+  digitalWrite(11, HIGH);
+  digitalWrite(12, HIGH);
+  digitalWrite(13, HIGH);
+}
+void ssd2no9(){        //Display number 9 on ssd2
+  digitalWrite(A1, HIGH);
+  digitalWrite(8, HIGH);
+  digitalWrite(9, HIGH);
+  digitalWrite(10, HIGH);
+  digitalWrite(11, LOW);
+  digitalWrite(12, HIGH);
+  digitalWrite(13, HIGH);
+}
+
+//##############################\\
+
+void setup() {        //Make all of the ssd's pins outputs
+  pinMode(A1, OUTPUT);
+  pinMode(A2, OUTPUT);
+  pinMode(2, OUTPUT);
+  pinMode(3, OUTPUT);
+  pinMode(4, OUTPUT);
+  pinMode(5, OUTPUT);
+  pinMode(6, OUTPUT);
+  pinMode(7, OUTPUT);
+  pinMode(8, OUTPUT);
+  pinMode(9, OUTPUT);
+  pinMode(10, OUTPUT);
+  pinMode(11, OUTPUT);
+  pinMode(12, OUTPUT);
+  pinMode(13, OUTPUT);
+
+  Serial.begin(9600);
+  delay(500);//Delay to let system boot
+  Serial.println("DHT11 Humidity & temperature Sensor\n\n");
+  delay(1000);//Wait before accessing Sensor
+  
+}
+
+void loop() {
+
+    num = round(DHT.humidity);
+    //num = num - 50;
+    
+    DHT.read11(dht_apin);
+
+    Serial.print("Current humidity = ");
+    Serial.print(DHT.humidity);
+    Serial.print("%  ");
+    Serial.print("temperature = ");
+    Serial.print(DHT.temperature); 
+    Serial.println("C  ");
+    
+    delay(4000);//Wait 4 seconds before accessing sensor again.
+ 
+      //Fastest should be once every two seconds.
+
+  //if(num>100)num=0;
+  //  num = 4;
+
+switch(num){
+  case 0:
+  ssd1off();
+  ssd2no0();
+  break;
+  
+  case 1:
+  ssd1off();
+  ssd2no1();
+  break;
+  
+  case 2:
+  ssd1off();
+  ssd2no2();
+  break;
+  
+  case 3:
+  ssd1off();
+  ssd2no3();
+  break;
+  
+  case 4:
+  ssd1off();
+  ssd2no4();
+  break;
+  
+  case 5:
+  ssd1off();
+  ssd2no5();
+  break;
+  
+  case 6:
+  ssd1off();
+  ssd2no6();
+  break;
+  
+  case 7:
+  ssd1off();
+  ssd2no7();
+  break;
+  
+  case 8:
+  ssd1off();
+  ssd2no8();
+  break;
+  
+  case 9:
+  ssd1off();
+  ssd2no9();
+  break;
+
+  case 10:
+  ssd1no1();
+  ssd2no0();
+  break;
+
+  case 11:
+  ssd1no1();
+  ssd2no1();
+  break;
+
+  case 12:
+  ssd1no1();
+  ssd2no2();
+  break;
+
+  case 13:
+  ssd1no1();
+  ssd2no3();
+  break;
+
+  case 14:
+  ssd1no1();
+  ssd2no4();
+  break;
+
+  case 15:
+  ssd1no1();
+  ssd2no5();
+  break;
+
+  case 16:
+  ssd1no1();
+  ssd2no6();
+  break;
+
+  case 17:
+  ssd1no1();
+  ssd2no7();
+  break;
+
+  case 18:
+  ssd1no1();
+  ssd2no8();
+  break;
+
+  case 19:
+  ssd1no1();
+  ssd2no9();
+  break;
+
+  case 20:
+  ssd1no2();
+  ssd2no0();
+  break;
+
+  case 21:
+  ssd1no2();
+  ssd2no1();
+  break;
+
+  case 22:
+  ssd1no2();
+  ssd2no2();
+  break;
+
+  case 23:
+  ssd1no2();
+  ssd2no3();
+  break;
+
+  case 24:
+  ssd1no2();
+  ssd2no4();
+  break;
+
+  case 25:
+  ssd1no2();
+  ssd2no5();
+  break;
+
+  case 26:
+  ssd1no2();
+  ssd2no6();
+  break;
+
+  case 27:
+  ssd1no2();
+  ssd2no7();
+  break;
+
+  case 28:
+  ssd1no2();
+  ssd2no8();
+  break;
+
+  case 29:
+  ssd1no2();
+  ssd2no9();
+  break;
+
+  case 30:
+  ssd1no3();
+  ssd2no0();
+  break;
+
+  case 31:
+  ssd1no3();
+  ssd2no1();
+  break;
+
+  case 32:
+  ssd1no3();
+  ssd2no2();
+  break;
+
+  case 33:
+  ssd1no3();
+  ssd2no3();
+  break;
+
+  case 34:
+  ssd1no3();
+  ssd2no4();
+  break;
+
+  case 35:
+  ssd1no3();
+  ssd2no5();
+  break;
+
+  case 36:
+  ssd1no3();
+  ssd2no6();
+  break;
+
+  case 37:
+  ssd1no3();
+  ssd2no7();
+  break;
+
+  case 38:
+  ssd1no3();
+  ssd2no8();
+  break;
+
+  case 39:
+  ssd1no3();
+  ssd2no9();
+  break;
+
+  case 40:
+  ssd1no4();
+  ssd2no0();
+  break;
+
+  case 41:
+  ssd1no4();
+  ssd2no1();
+  break;
+
+  case 42:
+  ssd1no4();
+  ssd2no2();
+  break;
+
+  case 43:
+  ssd1no4();
+  ssd2no3();
+  break;
+
+  case 44:
+  ssd1no4();
+  ssd2no4();
+  break;
+
+  case 45:
+  ssd1no4();
+  ssd2no5();
+  break;
+
+  case 46:
+  ssd1no4();
+  ssd2no6();
+  break;
+
+  case 47:
+  ssd1no4();
+  ssd2no7();
+  break;
+
+  case 48:
+  ssd1no4();
+  ssd2no8();
+  break;
+
+  case 49:
+  ssd1no4();
+  ssd2no9();
+  break;
+  
+  case 50:
+  ssd1no5();
+  ssd2no0();
+  break;
+
+  case 51:
+  ssd1no5();
+  ssd2no1();
+  break;
+
+  case 52:
+  ssd1no5();
+  ssd2no2();
+  break;
+
+  case 53:
+  ssd1no5();
+  ssd2no3();
+  break;
+
+  case 54:
+  ssd1no5();
+  ssd2no4();
+  break;
+
+  case 55:
+  ssd1no5();
+  ssd2no5();
+  break;
+
+  case 56:
+  ssd1no5();
+  ssd2no6();
+  break;
+
+  case 57:
+  ssd1no5();
+  ssd2no7();
+  break;
+
+  case 58:
+  ssd1no5();
+  ssd2no8();
+  break;
+
+  case 59:
+  ssd1no5();
+  ssd2no9();
+  break;
+
+  case 60:
+  ssd1no6();
+  ssd2no0();
+  break;
+
+  case 61:
+  ssd1no6();
+  ssd2no1();
+  break;
+
+  case 62:
+  ssd1no6();
+  ssd2no2();
+  break;
+
+  case 63:
+  ssd1no6();
+  ssd2no3();
+  break;
+
+  case 64:
+  ssd1no6();
+  ssd2no4();
+  break;
+
+  case 65:
+  ssd1no6();
+  ssd2no5();
+  break;
+
+  case 66:
+  ssd1no6();
+  ssd2no6();
+  break;
+
+  case 67:
+  ssd1no6();
+  ssd2no7();
+  break;
+
+  case 68:
+  ssd1no6();
+  ssd2no8();
+  break;
+
+  case 69:
+  ssd1no6();
+  ssd2no9();
+  break;
+
+  case 70:
+  ssd1no7();
+  ssd2no0();
+  break;
+
+  case 71:
+  ssd1no7();
+  ssd2no1();
+  break;
+
+  case 72:
+  ssd1no7();
+  ssd2no2();
+  break;
+
+  case 73:
+  ssd1no7();
+  ssd2no3();
+  break;
+
+  case 74:
+  ssd1no7();
+  ssd2no4();
+  break;
+
+  case 75:
+  ssd1no7();
+  ssd2no5();
+  break;
+
+  case 76:
+  ssd1no7();
+  ssd2no6();
+  break;
+
+  case 77:
+  ssd1no7();
+  ssd2no7();
+  break;
+
+  case 78:
+  ssd1no7();
+  ssd2no8();
+  break;
+
+  case 79:
+  ssd1no7();
+  ssd2no9();
+  break;
+
+  case 80:
+  ssd1no8();
+  ssd2no0();
+  break;
+
+  case 81:
+  ssd1no8();
+  ssd2no1();
+  break;
+
+  case 82:
+  ssd1no8();
+  ssd2no2();
+  break;
+
+  case 83:
+  ssd1no8();
+  ssd2no3();
+  break;
+
+  case 84:
+  ssd1no8();
+  ssd2no4();
+  break;
+
+  case 85:
+  ssd1no8();
+  ssd2no5();
+  break;
+
+  case 86:
+  ssd1no8();
+  ssd2no6();
+  break;
+
+  case 87:
+  ssd1no8();
+  ssd2no7();
+  break;
+
+  case 88:
+  ssd1no8();
+  ssd2no8();
+  break;
+
+  case 89:
+  ssd1no8();
+  ssd2no9();
+  break;
+
+  case 90:
+  ssd1no9();
+  ssd2no0();
+  break;
+
+  case 91:
+  ssd1no9();
+  ssd2no1();
+  break;
+
+  case 92:
+  ssd1no9();
+  ssd2no2();
+  break;
+
+  case 93:
+  ssd1no9();
+  ssd2no3();
+  break;
+
+  case 94:
+  ssd1no9();
+  ssd2no4();
+  break;
+
+  case 95:
+  ssd1no9();
+  ssd2no5();
+  break;
+
+  case 96:
+  ssd1no9();
+  ssd2no6();
+  break;
+
+  case 97:
+  ssd1no9();
+  ssd2no7();
+  break;
+
+  case 98:
+  ssd1no9();
+  ssd2no8();
+  break;
+
+  case 99:
+  ssd1no9();
+  ssd2no9();
+  break;
+
+  case 100:
+  ssd1no0();
+  ssd2no0();
+}
+}
