@@ -238,7 +238,6 @@ void setup() {        //Make all of the ssd's pins outputs
 void loop() {
 
     num = round(DHT.humidity);
-    //num = num - 50;
     
     DHT.read11(dht_apin);
 
@@ -249,12 +248,7 @@ void loop() {
     Serial.print(DHT.temperature); 
     Serial.println("C  ");
     
-    delay(4000);//Wait 4 seconds before accessing sensor again.
- 
-      //Fastest should be once every two seconds.
-
-  //if(num>100)num=0;
-  //  num = 4;
+    delay(4000); //Wait 4 seconds before accessing sensor again, fastest should be once every two seconds
 
 switch(num){
   case 0:
